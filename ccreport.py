@@ -2,13 +2,18 @@
 
 import sys
 import re
-#parser for santander credit card report file
 
-transactions=[]
-# Date			Card no.			Description				Money in	Money out
-with open(sys.argv[1],'r') as fp:
+
+class ccparser:
+  """parser for santander credit card report file"""
+  def __init__(self):
+    self.transactions=[]
+
+  def parse(self, f):
+    """ f is the file object to parse """
     while True:
-        line = fp.readline().rstrip('\r\n')
+    # Date			Card no.			Description				Money in	Money out
+        line = f.readline().rstrip('\r\n')
         if not line:
             break
         d=line.split('\t')
@@ -43,9 +48,13 @@ with open(sys.argv[1],'r') as fp:
         if idx<0:
             date=cardno
             cardno=''
-        transactions.append("%s;%s;%s;%s" % (date, cardno, description, amount))
+        self.transactions.append("%s;%s;%s;%s" % (date, cardno, description, amount))
 
 
-# print transactions in reverse order
-for t in transactions:
+if __name__=='__main__':
+  p = ccparser()
+  with open(sys.argv[1],'r') as fp:
+    p.parse(fp)
+  # print transactions in reverse order
+  for t in p.transactions:
     print t
